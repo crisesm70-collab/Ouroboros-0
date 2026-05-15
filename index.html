@@ -11,12 +11,15 @@
     --beige:#d8c2a0;
     --beige-soft:#b89c78;
     --beige-dim:#7a6650;
-    --gold:#e3a55a;
-    --gold-bright:#f4c97a;
+    --gold:#c9a76a;
+    --gold-bright:#e8c98a;
     --gray:#5a4d40;
     --gray-2:#3f352b;
-    --ink:#1a1108;
+    --ink:#0a0a0a;
     --line:#7a5a36;
+    --onyx:#0b0b0d;
+    --onyx-2:#1a1a1e;
+    --silver:#5a5a64;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0;background:radial-gradient(ellipse at center,#3a2818 0%,#2a1d12 60%,#1a110a 100%);color:var(--beige);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Georgia,serif;min-height:100vh;overflow-x:hidden}
@@ -24,8 +27,8 @@
 
   .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 60px}
   .hero{position:relative;width:100%;aspect-ratio:1/1;max-width:760px;margin:0 auto;user-select:none}
-  .hermit{position:absolute;left:50%;top:-2px;transform:translate(-50%,0);font-family:"Cinzel","Trajan Pro",Georgia,serif;letter-spacing:.55em;font-size:clamp(18px,3.4vw,30px);font-weight:600;color:var(--gold-bright);text-shadow:0 0 14px rgba(244,201,122,.35),0 2px 4px #000;padding:6px 14px;z-index:5}
-  .hermit::after{content:"";display:block;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-top:6px}
+  .hermit{position:absolute;left:50%;top:-4px;transform:translate(-50%,0);font-family:"Cinzel","Trajan Pro",Georgia,serif;letter-spacing:.6em;font-size:clamp(20px,3.6vw,32px);font-weight:500;color:var(--gold-bright);text-shadow:0 0 18px rgba(232,201,138,.3),0 2px 6px #000;padding:6px 14px 8px;z-index:5;text-indent:.6em}
+  .hermit::after{content:"";display:block;height:1px;background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold) 70%,transparent);margin-top:8px;opacity:.7}
 
   svg.ouro{width:100%;height:100%;display:block;overflow:visible}
 
@@ -56,19 +59,27 @@
   .toggle.done{background:var(--gold);color:var(--ink)}
 
   .cat{margin-top:14px}
-  .cat h3{margin:0 0 6px;font-family:"Cinzel",Georgia,serif;color:var(--beige);font-size:13px;letter-spacing:.18em;text-transform:uppercase;border-left:3px solid var(--gold);padding-left:10px}
+  .cat h3{margin:0 0 6px;font-family:"Cinzel",Georgia,serif;color:var(--beige);font-size:13px;letter-spacing:.18em;text-transform:uppercase;border-left:3px solid var(--gold);padding-left:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .cat h3 .catprog{font-family:Georgia,serif;color:var(--beige-dim);font-size:11px;letter-spacing:.15em;font-weight:400}
   ul.tree{list-style:none;margin:6px 0 0;padding:0 0 0 4px}
-  ul.tree ul{list-style:none;margin:4px 0 6px;padding:4px 0 4px 18px;border-left:1px dashed var(--gray)}
+  ul.tree ul{list-style:none;margin:4px 0 6px;padding:4px 0 4px 22px;border-left:1px dashed var(--gray)}
   ul.tree li{margin:2px 0}
-  .topic{cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;color:var(--beige);font-size:14.5px;line-height:1.3;transition:background .15s}
-  .topic:hover{background:rgba(216,194,160,.06)}
-  .topic .arrow{display:inline-block;width:10px;color:var(--gold);transition:transform .2s;font-size:11px}
+  .topic-row{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:6px;transition:background .15s}
+  .topic-row:hover{background:rgba(216,194,160,.05)}
+  .chk{appearance:none;-webkit-appearance:none;width:18px;height:18px;min-width:18px;border:1.5px solid var(--beige-dim);border-radius:4px;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin:0;transition:all .15s;flex-shrink:0}
+  .chk:hover{border-color:var(--gold-bright)}
+  .chk:checked{background:var(--gold);border-color:var(--gold-bright);box-shadow:0 0 6px rgba(232,201,138,.4)}
+  .chk:checked::after{content:"✓";color:var(--ink);font-size:13px;font-weight:bold;line-height:1}
+  .topic{cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--beige);font-size:14.5px;line-height:1.3;flex:1;min-width:0;padding:2px 0}
+  .topic.checked{color:var(--beige-dim);text-decoration:line-through;text-decoration-color:var(--beige-dim);text-decoration-thickness:1px}
+  .topic .arrow{display:inline-block;width:10px;color:var(--gold);transition:transform .2s;font-size:11px;flex-shrink:0}
   .topic.open .arrow{transform:rotate(90deg)}
   .sub{color:var(--beige-soft);font-size:13.5px;padding:3px 0 3px 20px;position:relative;line-height:1.35}
   .sub::before{content:"›";position:absolute;left:6px;color:var(--gold);opacity:.7}
-  .leaf{color:var(--beige-dim);font-size:13px;padding:2px 0 2px 20px;position:relative;line-height:1.35}
-  .leaf::before{content:"·";position:absolute;left:8px;color:var(--beige-dim)}
   .hidden{display:none}
+  .phase-progress{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--beige-soft);letter-spacing:.12em;margin-top:6px}
+  .bar{flex:1;height:4px;background:var(--gray-2);border-radius:2px;overflow:hidden;max-width:200px}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:2px;transition:width .35s ease;width:0%}
 
   .res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
   .res-card{background:rgba(26,17,8,.4);border:1px solid var(--gray);border-radius:10px;padding:12px}
@@ -96,7 +107,7 @@
   <div class="legend">
     <span><i class="dot full"></i> Completed</span>
     <span><i class="dot empty"></i> Incomplete</span>
-    <span style="color:var(--beige-soft)">Tap a phase</span>
+    <span style="color:var(--beige-soft)">Tap a phase → check topics</span>
   </div>
 
   <div id="panel" class="panel" role="region" aria-live="polite"></div>
@@ -941,9 +952,20 @@ const PHASES = [
 ];
 
 /* ---------- STATE ---------- */
-const STORAGE_KEY = "ouroboros_hermit_done_v1";
-const done = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
-function saveDone(){ localStorage.setItem(STORAGE_KEY, JSON.stringify([...done])); }
+const STORAGE_KEY = "ouroboros_hermit_topics_v2";
+const checkedTopics = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify([...checkedTopics])); }
+function topicKey(pid,ci,ti){ return `${pid}|${ci}|${ti}`; }
+
+function phaseCounts(p){
+  const groups = p.resources ? p.groups : p.cats;
+  let total=0, done=0;
+  groups.forEach((c,ci)=>c.topics.forEach((_,ti)=>{
+    total++;
+    if(checkedTopics.has(topicKey(p.id,ci,ti))) done++;
+  }));
+  return {total,done};
+}
 
 /* ---------- BUILD OUROBOROS ---------- */
 const svg = document.getElementById("svgRoot");
@@ -953,70 +975,111 @@ const R = 300; // ring radius for snake body
 // Defs: gradient + filters
 svg.innerHTML = `
 <defs>
-  <linearGradient id="snakeGrad" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0%" stop-color="#7a4f24"/>
-    <stop offset="50%" stop-color="#c8924a"/>
-    <stop offset="100%" stop-color="#5a3618"/>
+  <linearGradient id="snakeGrad" x1="0" y1="-1" x2="0" y2="1" gradientUnits="objectBoundingBox">
+    <stop offset="0%" stop-color="#1c1c22"/>
+    <stop offset="35%" stop-color="#0a0a0c"/>
+    <stop offset="65%" stop-color="#050507"/>
+    <stop offset="100%" stop-color="#15151a"/>
   </linearGradient>
-  <radialGradient id="scaleGrad" cx="50%" cy="50%" r="50%">
-    <stop offset="0%" stop-color="#e3a55a" stop-opacity=".55"/>
-    <stop offset="100%" stop-color="#c8924a" stop-opacity="0"/>
+  <radialGradient id="headGrad" cx="40%" cy="35%" r="70%">
+    <stop offset="0%" stop-color="#2a2a32"/>
+    <stop offset="55%" stop-color="#0a0a0c"/>
+    <stop offset="100%" stop-color="#000"/>
   </radialGradient>
-  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-    <feGaussianBlur stdDeviation="6" result="b"/>
+  <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur stdDeviation="3" result="b"/>
     <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="innerSheen" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="1.5"/>
   </filter>
 </defs>
 
-<!-- outer faint ring -->
-<circle cx="0" cy="0" r="${R+34}" fill="none" stroke="#5a4226" stroke-width="1" stroke-dasharray="2 6" opacity=".5"/>
-<circle cx="0" cy="0" r="${R-34}" fill="none" stroke="#5a4226" stroke-width="1" stroke-dasharray="2 6" opacity=".5"/>
+<!-- faint guide rings -->
+<circle cx="0" cy="0" r="${R+38}" fill="none" stroke="#3a2818" stroke-width="1" stroke-dasharray="1 6" opacity=".55"/>
+<circle cx="0" cy="0" r="${R-38}" fill="none" stroke="#3a2818" stroke-width="1" stroke-dasharray="1 6" opacity=".55"/>
 
-<!-- snake body: thick gold ring -->
-<circle cx="0" cy="0" r="${R}" fill="none" stroke="url(#snakeGrad)" stroke-width="48" stroke-linecap="round" filter="url(#glow)"/>
-<!-- inner shadow line -->
-<circle cx="0" cy="0" r="${R}" fill="none" stroke="#1a1108" stroke-width="2" opacity=".5"/>
-<!-- scales -->
+<!-- subtle drop shadow under body -->
+<circle cx="0" cy="4" r="${R}" fill="none" stroke="#000" stroke-width="46" stroke-linecap="round" opacity=".55" filter="url(#softGlow)"/>
+
+<!-- snake body -->
+<circle cx="0" cy="0" r="${R}" fill="none" stroke="url(#snakeGrad)" stroke-width="42" stroke-linecap="round"/>
+<!-- top highlight arc (silver sheen) -->
+<circle cx="0" cy="-2" r="${R}" fill="none" stroke="#3a3a44" stroke-width="2" opacity=".55"/>
+<circle cx="0" cy="-4" r="${R+8}" fill="none" stroke="#5a5a66" stroke-width="0.8" opacity=".35"/>
+<!-- inner edge shadow -->
+<circle cx="0" cy="0" r="${R-19}" fill="none" stroke="#000" stroke-width="2" opacity=".7"/>
+
+<!-- scale ridges -->
 <g id="scales"></g>
 
-<!-- snake head & tail meet at the top (12 o'clock = -90deg) -->
+<!-- snake head & tail meeting near top -->
 <g id="headTail"></g>
 
 <!-- nodes group -->
 <g id="nodes"></g>
 `;
 
-// Generate scale tick marks along the ring
+// Scale ridges along the body
 const scales = svg.querySelector("#scales");
-const N_SCALES = 72;
+const N_SCALES = 96;
 for(let i=0;i<N_SCALES;i++){
-  const ang = (i/N_SCALES)*Math.PI*2 - Math.PI/2;
-  const x1 = Math.cos(ang)*(R-22), y1 = Math.sin(ang)*(R-22);
-  const x2 = Math.cos(ang)*(R+22), y2 = Math.sin(ang)*(R+22);
+  // skip top gap where the head meets tail
+  const t = i/N_SCALES;
+  const ang = t*Math.PI*2 - Math.PI/2;
+  const deg = (ang*180/Math.PI);
+  if(deg > -110 && deg < -70) continue;
+  const x1 = Math.cos(ang)*(R-18), y1 = Math.sin(ang)*(R-18);
+  const x2 = Math.cos(ang)*(R+18), y2 = Math.sin(ang)*(R+18);
   const ln = document.createElementNS(NS,"line");
   ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
   ln.setAttribute("x2",x2); ln.setAttribute("y2",y2);
-  ln.setAttribute("stroke","#3a2616");
-  ln.setAttribute("stroke-width","1");
-  ln.setAttribute("opacity",".55");
+  ln.setAttribute("stroke","#1a1a1e");
+  ln.setAttribute("stroke-width","0.8");
+  ln.setAttribute("opacity",".6");
   scales.appendChild(ln);
 }
+// Spine highlight line (thin silver chevron along outer edge)
+const spine = document.createElementNS(NS,"circle");
+spine.setAttribute("cx","0"); spine.setAttribute("cy","0");
+spine.setAttribute("r", String(R+14));
+spine.setAttribute("fill","none");
+spine.setAttribute("stroke","#2a2a32");
+spine.setAttribute("stroke-width","0.6");
+spine.setAttribute("opacity",".55");
+scales.appendChild(spine);
 
-// Snake head & tail meeting point (top, near the HERMIT label)
-// Place head slightly to the left of top, tail slightly to the right, head biting tail
+// Snake head & tail — refined, minimal serpent silhouette
 const ht = svg.querySelector("#headTail");
 ht.innerHTML = `
-  <!-- tail tapers (right of top) -->
-  <path d="M 28,-${R} q 30,-2 50,8" fill="none" stroke="url(#snakeGrad)" stroke-width="22" stroke-linecap="round" opacity=".95"/>
-  <!-- head shape (left of top) biting -->
-  <g transform="translate(-30,-${R}) rotate(-15)">
-    <path d="M 0,0 q 30,-22 60,-6 q 12,8 8,18 q -10,12 -34,8 q -22,-2 -34,-12 z"
-          fill="url(#snakeGrad)" stroke="#1a1108" stroke-width="1.5"/>
-    <!-- eye -->
-    <circle cx="34" cy="-4" r="3.2" fill="#1a1108"/>
-    <circle cx="34.8" cy="-5" r="1" fill="#f4c97a"/>
+  <!-- tail: tapered curve emerging from right of top into head's mouth -->
+  <path d="M 70,-${R-4} C 50,-${R+6} 30,-${R+8} 10,-${R-2}"
+        fill="none" stroke="url(#snakeGrad)" stroke-width="18" stroke-linecap="round" opacity=".95"/>
+  <path d="M 70,-${R-4} C 50,-${R+6} 30,-${R+8} 10,-${R-2}"
+        fill="none" stroke="#2a2a32" stroke-width="1" opacity=".5"/>
+
+  <!-- head: sleek triangular serpent head, rotated to bite the tail -->
+  <g transform="translate(-12,-${R-2}) rotate(20)">
+    <!-- lower jaw shadow -->
+    <path d="M 6,6 q 28,-2 56,2 q 6,2 6,6 q 0,6 -10,8 q -28,2 -52,-2 z"
+          fill="#0a0a0c" opacity=".85"/>
+    <!-- main head shape -->
+    <path d="M 0,-2 q 26,-18 62,-10 q 14,3 16,12 q -2,9 -16,12 q -36,8 -62,-2 q -8,-4 -8,-10 q 0,-6 8,-12 z"
+          fill="url(#headGrad)" stroke="#000" stroke-width="0.8"/>
+    <!-- subtle ridge highlight on top of head -->
+    <path d="M 4,-4 q 24,-14 54,-8" fill="none" stroke="#3a3a44" stroke-width="1" opacity=".55"/>
+    <!-- eye socket -->
+    <ellipse cx="40" cy="-2" rx="5" ry="3.2" fill="#000"/>
+    <!-- eye iris (silver) -->
+    <ellipse cx="40" cy="-2" rx="3.2" ry="2" fill="#9a9aa6"/>
+    <!-- vertical slit pupil -->
+    <rect x="39.4" y="-3.6" width="1.2" height="3.2" rx=".6" fill="#000"/>
+    <!-- eye gleam -->
+    <circle cx="41" cy="-3" r=".7" fill="#e8e8ee"/>
+    <!-- nostril -->
+    <ellipse cx="62" cy="-1" rx=".9" ry=".6" fill="#000"/>
     <!-- fang -->
-    <path d="M 28,12 l 2,8 l 2,-8 z" fill="#f4ead0"/>
+    <path d="M 60,8 l 1.6,9 l 1.6,-9 z" fill="#d8d8de" opacity=".85"/>
   </g>
 `;
 
@@ -1029,18 +1092,31 @@ const startDeg = -65; // just right of top
 const endDeg = 295;   // 295 = -65 + 360, full sweep but starting after top
 // We'll skip a 50deg gap at top (from -115 to -65)
 const usable = 360 - 50; // 310 degrees usable
+function arcPath(cx,cy,r,startA,endA){
+  const s={x:cx+r*Math.cos(startA), y:cy+r*Math.sin(startA)};
+  const e={x:cx+r*Math.cos(endA),   y:cy+r*Math.sin(endA)};
+  const large = (endA-startA) > Math.PI ? 1 : 0;
+  return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+}
+
 PHASES.forEach((p,i)=>{
   const t = i/(PHASE_COUNT-1);
   const deg = startDeg + t*usable;
   const rad = deg * Math.PI/180;
   const x = Math.cos(rad)*R, y = Math.sin(rad)*R;
+  const counts = phaseCounts(p);
+  const pct = counts.total ? counts.done/counts.total : 0;
+  const isDone = counts.total>0 && counts.done===counts.total;
   const g = document.createElementNS(NS,"g");
-  g.setAttribute("class","node"+(done.has(p.id)?" done":""));
+  g.setAttribute("class","node"+(isDone?" done":""));
   g.setAttribute("data-id", p.id);
   g.setAttribute("transform",`translate(${x},${y})`);
+  // partial progress arc around node
+  const arc = pct>0 && pct<1 ? `<path class="prog" d="${arcPath(0,0,32,-Math.PI/2,-Math.PI/2 + pct*2*Math.PI)}" fill="none" stroke="#e8c98a" stroke-width="3" stroke-linecap="round" opacity=".9"/>` : "";
   g.innerHTML = `
     <circle class="ring" r="36"/>
     <circle class="bg" r="28"/>
+    ${arc}
     <text>${p.short}</text>
   `;
   // Label outside the ring
@@ -1071,28 +1147,64 @@ PHASES.forEach((p,i)=>{
 
 /* ---------- PANEL ---------- */
 const panel = document.getElementById("panel");
+
+function refreshNode(pid){
+  const p = PHASES.find(x=>x.id===pid); if(!p) return;
+  const node = nodesG.querySelector(`.node[data-id="${CSS.escape(pid)}"]`);
+  if(!node) return;
+  const counts = phaseCounts(p);
+  const pct = counts.total ? counts.done/counts.total : 0;
+  const isDone = counts.total>0 && counts.done===counts.total;
+  node.classList.toggle("done", isDone);
+  const old = node.querySelector("path.prog"); if(old) old.remove();
+  if(pct>0 && pct<1){
+    const path = document.createElementNS(NS,"path");
+    path.setAttribute("class","prog");
+    path.setAttribute("d", arcPath(0,0,32,-Math.PI/2,-Math.PI/2 + pct*2*Math.PI));
+    path.setAttribute("fill","none");
+    path.setAttribute("stroke","#e8c98a");
+    path.setAttribute("stroke-width","3");
+    path.setAttribute("stroke-linecap","round");
+    path.setAttribute("opacity",".9");
+    node.insertBefore(path, node.querySelector("text"));
+  }
+}
+
 function openPanel(id){
   const p = PHASES.find(x=>x.id===id); if(!p) return;
-  const isDone = done.has(id);
+  const counts = phaseCounts(p);
+  const pct = counts.total ? Math.round(counts.done/counts.total*100) : 0;
+
   let html = `
     <header>
-      <div>
+      <div style="flex:1;min-width:0">
         <h2>${p.title}</h2>
         <div class="dur">Duration: ${p.dur}</div>
+        <div class="phase-progress">
+          <span id="pcount">${counts.done} / ${counts.total}</span>
+          <div class="bar"><i id="pbar" style="width:${pct}%"></i></div>
+          <span id="ppct">${pct}%</span>
+        </div>
       </div>
-      ${p.resources? "" : `<button class="toggle ${isDone?"done":""}" id="btnToggle">${isDone?"✓ Completed":"Mark complete"}</button>`}
     </header>
   `;
 
   const groups = p.resources ? p.groups : p.cats;
   groups.forEach((c,ci)=>{
-    html += `<div class="cat"><h3>${c.name}</h3><ul class="tree">`;
+    let catDone=0;
+    c.topics.forEach((_,ti)=>{ if(checkedTopics.has(topicKey(id,ci,ti))) catDone++; });
+    html += `<div class="cat"><h3><span>${c.name}</span><span class="catprog" data-cat="${ci}">${catDone}/${c.topics.length}</span></h3><ul class="tree">`;
     c.topics.forEach((t,ti)=>{
       const [name, subs] = t;
       const tid = `t-${id}-${ci}-${ti}`;
+      const key = topicKey(id,ci,ti);
+      const checked = checkedTopics.has(key);
       html += `<li>
-        <div class="topic" data-target="${tid}">
-          <span class="arrow">▶</span><span>${name}</span>
+        <div class="topic-row">
+          <input type="checkbox" class="chk" data-key="${key}" data-cat="${ci}" ${checked?"checked":""} aria-label="Mark ${name} complete"/>
+          <div class="topic ${checked?"checked":""}" data-target="${tid}">
+            <span class="arrow">▶</span><span>${name}</span>
+          </div>
         </div>
         <ul id="${tid}" class="hidden">
           ${subs.map(s=>`<li class="sub">${s}</li>`).join("")}
@@ -1114,20 +1226,30 @@ function openPanel(id){
     });
   });
 
-  const btn = document.getElementById("btnToggle");
-  if(btn){
-    btn.addEventListener("click",()=>{
-      if(done.has(id)){ done.delete(id); } else { done.add(id); }
-      saveDone();
-      // update node visual
-      const node = nodesG.querySelector(`.node[data-id="${CSS.escape(id)}"]`);
-      if(node) node.classList.toggle("done", done.has(id));
-      // update button
-      const nowDone = done.has(id);
-      btn.textContent = nowDone ? "✓ Completed" : "Mark complete";
-      btn.classList.toggle("done", nowDone);
+  panel.querySelectorAll(".chk").forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      const k = cb.dataset.key;
+      if(cb.checked) checkedTopics.add(k); else checkedTopics.delete(k);
+      saveState();
+      // strike-through on label
+      const topicEl = cb.parentElement.querySelector(".topic");
+      topicEl.classList.toggle("checked", cb.checked);
+      // update category counter
+      const ci = +cb.dataset.cat;
+      const groups = p.resources ? p.groups : p.cats;
+      let cd=0; groups[ci].topics.forEach((_,ti)=>{ if(checkedTopics.has(topicKey(id,ci,ti))) cd++; });
+      const cp = panel.querySelector(`.catprog[data-cat="${ci}"]`);
+      if(cp) cp.textContent = `${cd}/${groups[ci].topics.length}`;
+      // update phase counters + bar
+      const cc = phaseCounts(p);
+      const pp = cc.total ? Math.round(cc.done/cc.total*100) : 0;
+      panel.querySelector("#pcount").textContent = `${cc.done} / ${cc.total}`;
+      panel.querySelector("#pbar").style.width = pp+"%";
+      panel.querySelector("#ppct").textContent = pp+"%";
+      // update node ring
+      refreshNode(id);
     });
-  }
+  });
 }
 </script>
 </body>
