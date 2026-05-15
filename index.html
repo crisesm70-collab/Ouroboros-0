@@ -1,0 +1,1134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Hermit — Ouroboros Cybersec Roadmap</title>
+<style>
+  :root{
+    --bg:#2a1d12;
+    --bg-2:#3a2818;
+    --beige:#d8c2a0;
+    --beige-soft:#b89c78;
+    --beige-dim:#7a6650;
+    --gold:#e3a55a;
+    --gold-bright:#f4c97a;
+    --gray:#5a4d40;
+    --gray-2:#3f352b;
+    --ink:#1a1108;
+    --line:#7a5a36;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:radial-gradient(ellipse at center,#3a2818 0%,#2a1d12 60%,#1a110a 100%);color:var(--beige);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Georgia,serif;min-height:100vh;overflow-x:hidden}
+  body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 60px}
+  .hero{position:relative;width:100%;aspect-ratio:1/1;max-width:760px;margin:0 auto;user-select:none}
+  .hermit{position:absolute;left:50%;top:-2px;transform:translate(-50%,0);font-family:"Cinzel","Trajan Pro",Georgia,serif;letter-spacing:.55em;font-size:clamp(18px,3.4vw,30px);font-weight:600;color:var(--gold-bright);text-shadow:0 0 14px rgba(244,201,122,.35),0 2px 4px #000;padding:6px 14px;z-index:5}
+  .hermit::after{content:"";display:block;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-top:6px}
+
+  svg.ouro{width:100%;height:100%;display:block;overflow:visible}
+
+  .node{cursor:pointer}
+  .node circle.bg{fill:var(--gray-2);stroke:var(--beige-dim);stroke-width:2;transition:fill .25s,stroke .25s}
+  .node.done circle.bg{fill:var(--gold);stroke:var(--gold-bright);filter:drop-shadow(0 0 8px rgba(243,201,122,.55))}
+  .node text{fill:var(--beige);font-family:"Cinzel",Georgia,serif;font-weight:700;text-anchor:middle;dominant-baseline:central;font-size:18px;pointer-events:none}
+  .node.done text{fill:var(--ink)}
+  .node:hover circle.bg{stroke:var(--gold-bright)}
+  .node .ring{fill:none;stroke:var(--line);stroke-width:1;stroke-dasharray:2 4;opacity:.5}
+
+  .label{fill:var(--beige-soft);font-family:Georgia,serif;font-size:11px;text-anchor:middle;pointer-events:none;letter-spacing:.12em;text-transform:uppercase}
+  .label.dur{fill:var(--beige-dim);font-size:10px;letter-spacing:.18em}
+
+  .legend{display:flex;justify-content:center;gap:20px;margin-top:18px;flex-wrap:wrap;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--beige-dim)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid var(--beige-dim)}
+  .dot.full{background:var(--gold);border-color:var(--gold-bright);box-shadow:0 0 6px rgba(243,201,122,.5)}
+  .dot.empty{background:var(--gray-2)}
+
+  .panel{margin:30px auto 0;max-width:780px;background:linear-gradient(180deg,rgba(58,40,24,.85),rgba(42,29,18,.9));border:1px solid var(--line);border-radius:14px;padding:22px;display:none;box-shadow:0 10px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(216,194,160,.08)}
+  .panel.open{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .panel header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px;border-bottom:1px solid var(--gray);padding-bottom:12px}
+  .panel h2{margin:0;font-family:"Cinzel",Georgia,serif;color:var(--gold-bright);font-size:18px;letter-spacing:.12em}
+  .panel .dur{color:var(--beige-dim);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-top:4px}
+  .toggle{appearance:none;border:1px solid var(--gold);background:transparent;color:var(--gold-bright);padding:8px 14px;border-radius:999px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .toggle.done{background:var(--gold);color:var(--ink)}
+
+  .cat{margin-top:14px}
+  .cat h3{margin:0 0 6px;font-family:"Cinzel",Georgia,serif;color:var(--beige);font-size:13px;letter-spacing:.18em;text-transform:uppercase;border-left:3px solid var(--gold);padding-left:10px}
+  ul.tree{list-style:none;margin:6px 0 0;padding:0 0 0 4px}
+  ul.tree ul{list-style:none;margin:4px 0 6px;padding:4px 0 4px 18px;border-left:1px dashed var(--gray)}
+  ul.tree li{margin:2px 0}
+  .topic{cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;color:var(--beige);font-size:14.5px;line-height:1.3;transition:background .15s}
+  .topic:hover{background:rgba(216,194,160,.06)}
+  .topic .arrow{display:inline-block;width:10px;color:var(--gold);transition:transform .2s;font-size:11px}
+  .topic.open .arrow{transform:rotate(90deg)}
+  .sub{color:var(--beige-soft);font-size:13.5px;padding:3px 0 3px 20px;position:relative;line-height:1.35}
+  .sub::before{content:"›";position:absolute;left:6px;color:var(--gold);opacity:.7}
+  .leaf{color:var(--beige-dim);font-size:13px;padding:2px 0 2px 20px;position:relative;line-height:1.35}
+  .leaf::before{content:"·";position:absolute;left:8px;color:var(--beige-dim)}
+  .hidden{display:none}
+
+  .res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .res-card{background:rgba(26,17,8,.4);border:1px solid var(--gray);border-radius:10px;padding:12px}
+  .res-card h4{margin:0 0 8px;color:var(--gold-bright);font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-family:"Cinzel",Georgia,serif}
+
+  .footer{text-align:center;margin-top:30px;color:var(--beige-dim);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+
+  @media (max-width:600px){
+    .node text{font-size:15px}
+    .label{font-size:10px}
+    .label.dur{font-size:9px}
+    .panel{padding:16px;border-radius:10px}
+    .panel h2{font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hermit">HERMIT</div>
+    <svg class="ouro" viewBox="-400 -400 800 800" id="svgRoot" aria-label="Ouroboros progress wheel"></svg>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot full"></i> Completed</span>
+    <span><i class="dot empty"></i> Incomplete</span>
+    <span style="color:var(--beige-soft)">Tap a phase</span>
+  </div>
+
+  <div id="panel" class="panel" role="region" aria-live="polite"></div>
+
+  <div class="footer">Ouroboros — the cycle completes when you do</div>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const PHASES = [
+  {id:"0", title:"Phase 0 — Computer & Internet Basics", short:"0", dur:"1–3 months",
+   cats:[
+    {name:"Computer Hardware Fundamentals", topics:[
+      ["What a computer actually is",["hardware vs software","input/process/output/storage"]],
+      ["CPU fundamentals",["ALU","cores","threads","clock speed","cache"]],
+      ["RAM fundamentals",["volatile memory","memory allocation","DDR generations"]],
+      ["HDD vs SSD",["read/write speeds","SATA vs NVMe","flash memory"]],
+      ["GPU basics",["rendering","VRAM","parallel processing"]],
+      ["Motherboard basics",["chipset","sockets","buses"]],
+      ["Power supply basics",["wattage","efficiency ratings"]],
+      ["Cooling systems",["air cooling","liquid cooling","thermal throttling"]],
+      ["BIOS/UEFI basics",["boot order","firmware","secure boot"]],
+      ["Input/output devices",["keyboard","mouse","monitor"]],
+      ["Peripheral devices",["printers","webcams","external drives"]],
+      ["Network cards (NICs)",["Ethernet","MAC addresses"]],
+      ["USB standards",["USB-A/C","USB 2.0/3.0"]],
+      ["Laptop vs desktop architecture",["portability","upgradeability"]],
+      ["ARM vs x86 processors",["instruction sets","mobile vs desktop"]],
+      ["Multi-core CPUs",["parallel execution","workload distribution"]],
+      ["CPU threads",["hyperthreading","logical processors"]],
+      ["Virtual memory",["swap/pagefile","memory paging"]],
+      ["Storage partitions",["MBR","GPT","partition tables"]],
+    ]},
+    {name:"Binary & Data Representation", topics:[
+      ["Binary numbers",["base-2","binary conversion"]],
+      ["Decimal vs binary",["conversions","representation"]],
+      ["Hexadecimal",["base-16","hex notation"]],
+      ["Bits vs bytes",["binary digits","storage measurement"]],
+      ["ASCII",["character mapping"]],
+      ["Unicode",["UTF-8","multilingual encoding"]],
+      ["Character encoding",["encoding schemes","byte representation"]],
+      ["File signatures / magic bytes",["file identification","headers"]],
+      ["Endianness",["little endian","big endian"]],
+      ["Data size units (KB, MB, GB, TB)",["storage units","binary vs decimal units"]],
+    ]},
+    {name:"Operating System Fundamentals", topics:[
+      ["What an OS does",["hardware abstraction","resource management"]],
+      ["Kernel basics",["monolithic kernels","microkernels"]],
+      ["User space vs kernel space",["privilege levels","isolation"]],
+      ["Drivers",["hardware communication","kernel modules"]],
+      ["Processes",["process lifecycle","PID"]],
+      ["Threads",["multithreading","concurrency"]],
+      ["Memory management",["paging","allocation"]],
+      ["Multitasking",["scheduling","context switching"]],
+      ["System calls",["syscall interface","kernel interaction"]],
+      ["Boot process",["BIOS/UEFI","bootloader","kernel init"]],
+      ["Environment variables",["PATH","shell variables"]],
+      ["System architecture basics",["32-bit vs 64-bit","instruction sets"]],
+    ]},
+    {name:"File System Fundamentals", topics:[
+      ["Files vs directories",["hierarchy","storage organization"]],
+      ["File paths",["path traversal","separators"]],
+      ["Absolute vs relative paths",["root paths","working directory"]],
+      ["Hidden files",["dotfiles","system files"]],
+      ["File extensions",["executable files","script files"]],
+      ["Permissions",["read/write/execute","ACLs"]],
+      ["NTFS basics",["Windows permissions","journaling"]],
+      ["ext4 basics",["Linux journaling","inode structure"]],
+      ["FAT32 basics",["compatibility","file size limits"]],
+      ["Symbolic links",["shortcuts","symlinks"]],
+      ["Hard links",["inode references"]],
+      ["Mount points",["mounting devices","filesystem access"]],
+    ]},
+    {name:"Internet Fundamentals", topics:[
+      ["What the internet actually is",["interconnected networks","TCP/IP"]],
+      ["ISP fundamentals",["internet routing","bandwidth allocation"]],
+      ["Routers",["packet forwarding","routing tables"]],
+      ["Modems",["signal conversion","ISP communication"]],
+      ["Switches",["MAC learning","LAN communication"]],
+      ["Wireless networking basics",["Wi-Fi","radio frequencies"]],
+      ["Clients vs servers",["requests","responses"]],
+      ["Web browsers",["rendering engines","developer tools"]],
+      ["Search engines",["indexing","crawling"]],
+      ["Domains",["domain names","DNS resolution"]],
+      ["Hosting",["shared hosting","VPS"]],
+      ["Cloud servers",["virtualization","scalability"]],
+      ["Datacenters",["racks","redundancy"]],
+      ["CDN basics",["caching","edge servers"]],
+      ["Packets",["encapsulation","transmission"]],
+      ["Latency",["ping","round-trip time"]],
+      ["Bandwidth",["throughput","upload/download speeds"]],
+    ]},
+    {name:"How Websites Actually Work", topics:[
+      ["Frontend vs backend",["client-side","server-side"]],
+      ["Static vs dynamic websites",["HTML pages","database-driven sites"]],
+      ["HTML basics",["tags","forms","inputs"]],
+      ["CSS basics",["styling","selectors"]],
+      ["JavaScript basics",["DOM manipulation","events"]],
+      ["Databases",["relational databases","queries"]],
+      ["APIs",["REST","JSON"]],
+      ["HTTP requests/responses",["methods","headers","status codes"]],
+      ["Cookies",["session tracking","storage"]],
+      ["Sessions",["authentication state","session IDs"]],
+      ["Authentication basics",["logins","passwords","MFA"]],
+    ]},
+    {name:"Basic Troubleshooting Skills", topics:[
+      ["Reading error messages",["stack traces","logs"]],
+      ["Searching documentation",["official docs","man pages"]],
+      ["Using forums",["Reddit","StackOverflow"]],
+      ["Using StackOverflow",["debugging solutions","research skills"]],
+      ["Understanding logs",["system logs","application logs"]],
+      ["Basic debugging mindset",["root cause analysis","isolation testing"]],
+    ]},
+   ]},
+
+  {id:"A", title:"Phase A — Foundations", short:"A", dur:"3–6 months",
+   cats:[
+    {name:"Linux Fundamentals", topics:[
+      ["Linux philosophy",["open source","Unix philosophy"]],
+      ["Linux distributions",["distros","package ecosystems"]],
+      ["Ubuntu",["apt","Debian-based systems"]],
+      ["Debian",["stability","repositories"]],
+      ["Kali Linux",["pentesting tools","rolling releases"]],
+      ["Arch Linux",["pacman","manual configuration"]],
+      ["CentOS/RHEL",["enterprise Linux","yum/dnf"]],
+      ["Linux file system structure",["/etc","/var","/home","/tmp"]],
+      ["File system navigation",["ls","cd","pwd"]],
+      ["Permissions and ownership",["chmod","chown","groups"]],
+      ["chmod / chown",["octal permissions","ownership changes"]],
+      ["Users and groups",["useradd","groupadd"]],
+      ["Root user",["superuser privileges"]],
+      ["sudo",["privilege escalation","sudoers"]],
+      ["Environment variables",["PATH","shell environments"]],
+      ["Shells (bash, zsh)",["shell configuration","aliases"]],
+      ["Package management",["repositories","package installation"]],
+      ["apt",["install/update/remove"]],
+      ["yum / dnf",["package handling"]],
+      ["Process management",["foreground/background","signals"]],
+      ["ps / top / htop",["process monitoring"]],
+      ["Services",["daemons","startup services"]],
+      ["systemctl",["start/stop/restart services"]],
+      ["Journal logs",["journalctl","system logs"]],
+      ["Cron jobs",["task scheduling"]],
+      ["Bash scripting basics",["variables","loops","conditions"]],
+      ["SSH basics",["remote login","key authentication"]],
+      ["SCP / SFTP",["secure file transfer"]],
+      ["Compression tools",["archiving","extraction"]],
+      ["tar / gzip / zip",["compression formats"]],
+      ["Networking commands",["diagnostics","connectivity testing"]],
+      ["ifconfig / ip",["interface configuration"]],
+      ["ping",["ICMP testing"]],
+      ["traceroute",["path tracing"]],
+      ["netstat",["network connections"]],
+      ["ss",["socket statistics"]],
+      ["curl / wget",["HTTP requests","file downloads"]],
+      ["grep / find / awk / sed",["searching","parsing","text manipulation"]],
+      ["Vim / nano basics",["terminal editors"]],
+      ["Linux permissions model",["rwx","sticky bit","SUID/SGID"]],
+      ["Linux security basics",["hardening","permissions auditing"]],
+      ["SELinux / AppArmor basics",["mandatory access control"]],
+      ["Kernel basics",["kernel modules","syscalls"]],
+      ["Virtual machines in Linux",["KVM","QEMU"]],
+    ]},
+    {name:"Windows Fundamentals", topics:[
+      ["Windows architecture",["kernel","user mode","Win32 API"]],
+      ["Windows file system",["NTFS","drive letters","directories"]],
+      ["NTFS permissions",["ACLs","inheritance","ownership"]],
+      ["Windows users / groups",["local users","administrators","security groups"]],
+      ["User Account Control (UAC)",["privilege separation","elevation prompts"]],
+      ["Windows services",["service manager","startup types"]],
+      ["Windows processes",["process explorer","PID management"]],
+      ["Task Scheduler",["scheduled tasks","automation"]],
+      ["Registry basics",["hives","registry keys","startup entries"]],
+      ["Event Viewer",["security logs","application logs"]],
+      ["Windows Defender basics",["antivirus","real-time protection"]],
+      ["PowerShell basics",["cmdlets","scripting","pipelines"]],
+      ["CMD basics",["dir","cd","net commands"]],
+      ["Windows networking tools",["ipconfig","netstat","tracert","nslookup"]],
+      ["Active Directory introduction",["domains","domain controllers","users/groups"]],
+      ["Group Policy basics",["GPOs","policy inheritance"]],
+      ["SMB basics",["file sharing","SMB versions"]],
+      ["Remote Desktop Protocol (RDP)",["remote access","authentication"]],
+      ["Windows authentication basics",["NTLM","Kerberos"]],
+      ["DLL basics",["shared libraries","DLL loading"]],
+      ["Windows boot process",["boot manager","winload.exe"]],
+      ["Windows logs",["event logs","Sysmon basics"]],
+    ]},
+    {name:"Networking Fundamentals", topics:[
+      ["OSI model",["7 layers","encapsulation"]],
+      ["TCP/IP model",["Internet layer","transport layer"]],
+      ["Packets and frames",["Ethernet frames","IP packets"]],
+      ["MAC addresses",["hardware addresses","ARP resolution"]],
+      ["ARP",["ARP requests/replies","ARP cache"]],
+      ["IP addressing",["subnet masks","CIDR"]],
+      ["IPv4",["public/private IPs","reserved ranges"]],
+      ["IPv6",["address notation","link-local addresses"]],
+      ["Public vs private IPs",["NAT","RFC1918 ranges"]],
+      ["Subnetting",["network IDs","host ranges"]],
+      ["CIDR notation",["prefix lengths","subnet calculations"]],
+      ["Gateways",["default gateway","routing"]],
+      ["Routing basics",["static routing","dynamic routing"]],
+      ["Switching basics",["MAC tables","switching loops"]],
+      ["VLANs",["segmentation","trunk/access ports"]],
+      ["NAT",["PAT","port forwarding"]],
+      ["DHCP",["IP assignment","leases"]],
+      ["DNS",["resolution process","recursive queries"]],
+      ["DNS records",["A","AAAA","MX","TXT","CNAME"]],
+      ["HTTP / HTTPS",["requests","responses","TLS"]],
+      ["TLS / SSL",["certificates","encryption flow"]],
+      ["TCP three-way handshake",["SYN","SYN/ACK","ACK"]],
+      ["UDP fundamentals",["connectionless communication","datagrams"]],
+      ["Common ports / services",["80/443","22","21","25","445"]],
+      ["Firewalls",["packet filtering","stateful inspection"]],
+      ["IDS / IPS",["detection","prevention"]],
+      ["VPN basics",["tunneling","encryption"]],
+      ["Proxies",["forward proxies","reverse proxies"]],
+      ["Load balancers",["traffic distribution","redundancy"]],
+      ["Network segmentation",["VLAN isolation","internal separation"]],
+      ["Wireless networking",["SSIDs","channels","frequencies"]],
+      ["Wi-Fi security basics",["WPA2","WPA3","PSK"]],
+      ["Network troubleshooting",["packet loss","latency","DNS failures"]],
+    ]},
+    {name:"Cryptography Basics", topics:[
+      ["Encryption fundamentals",["plaintext/ciphertext","encryption flow"]],
+      ["Symmetric encryption",["AES","shared keys"]],
+      ["Asymmetric encryption",["RSA","ECC"]],
+      ["Public / private keys",["key pairs","key exchange"]],
+      ["Hashing",["one-way functions","integrity checking"]],
+      ["MD5",["collisions","weaknesses"]],
+      ["SHA family",["SHA-1","SHA-256"]],
+      ["Salting",["password protection","rainbow table defense"]],
+      ["Digital signatures",["authenticity","integrity"]],
+      ["Certificates",["X.509","certificate chains"]],
+      ["PKI",["certificate authorities","trust chains"]],
+      ["TLS / SSL",["HTTPS security","handshake process"]],
+      ["HTTPS encryption flow",["certificate validation","session keys"]],
+      ["Common crypto vulnerabilities",["weak algorithms","poor implementations"]],
+      ["Weak encryption",["DES","RC4"]],
+      ["Password storage concepts",["salted hashes","password stretching"]],
+      ["Rainbow tables",["precomputed hashes","lookup attacks"]],
+    ]},
+    {name:"Programming & Scripting — Python", topics:[
+      ["Variables",["assignment","scope"]],
+      ["Data types",["strings","integers","booleans"]],
+      ["Loops",["for loops","while loops"]],
+      ["Functions",["parameters","return values"]],
+      ["Lists / dictionaries",["indexing","iteration"]],
+      ["File handling",["reading/writing files"]],
+      ["APIs",["REST requests","JSON parsing"]],
+      ["Regex",["pattern matching","extraction"]],
+      ["Error handling",["try/except","exceptions"]],
+      ["Requests library",["GET/POST requests","headers"]],
+      ["Sockets",["TCP connections","networking basics"]],
+      ["Object-oriented basics",["classes","objects","inheritance"]],
+    ]},
+    {name:"Programming & Scripting — Bash", topics:[
+      ["Variables",["shell variables","environment variables"]],
+      ["Loops",["for","while"]],
+      ["Conditions",["if statements","test operators"]],
+      ["Functions",["reusable scripts"]],
+      ["Automation",["task scripting","cron integration"]],
+      ["Parsing command output",["pipes","grep","awk"]],
+    ]},
+    {name:"Programming & Scripting — JavaScript", topics:[
+      ["Variables / functions",["let/const","arrow functions"]],
+      ["DOM basics",["selectors","manipulation"]],
+      ["Events",["click events","listeners"]],
+      ["Browser behavior",["rendering","storage"]],
+      ["Fetch requests",["APIs","async communication"]],
+      ["Async basics",["promises","async/await"]],
+    ]},
+    {name:"Programming & Scripting — SQL", topics:[
+      ["SELECT",["retrieving data"]],
+      ["INSERT",["adding records"]],
+      ["UPDATE",["modifying records"]],
+      ["DELETE",["removing records"]],
+      ["WHERE clauses",["filtering"]],
+      ["JOINs",["combining tables"]],
+      ["Database relationships",["primary keys","foreign keys"]],
+    ]},
+    {name:"Optional Later Languages", topics:[
+      ["PowerShell",["Windows automation","AD interaction"]],
+      ["C",["memory management","pointers"]],
+      ["C++",["OOP","low-level programming"]],
+      ["Go",["concurrency","networking tools"]],
+      ["Ruby",["scripting","Metasploit modules"]],
+      ["Assembly",["registers","instructions"]],
+    ]},
+    {name:"Virtualization & Lab Building", topics:[
+      ["What virtualization is",["virtual hardware","hypervisors"]],
+      ["Hypervisors",["Type 1","Type 2"]],
+      ["VirtualBox",["VM creation","snapshots"]],
+      ["VMware",["networking","cloning"]],
+      ["Snapshots",["rollback","recovery"]],
+      ["VM networking",["isolated environments","adapters"]],
+      ["NAT networking",["internet access","internal translation"]],
+      ["Bridged networking",["direct LAN access"]],
+      ["Host-only networking",["isolated lab communication"]],
+      ["Building safe labs",["segmentation","isolated testing"]],
+      ["Kali VM setup",["pentesting environment"]],
+      ["Windows VM setup",["Windows targets","evaluation ISOs"]],
+      ["Linux VM setup",["Ubuntu/Debian servers"]],
+    ]},
+    {name:"Cybersecurity Fundamentals", topics:[
+      ["CIA triad",["confidentiality","integrity","availability"]],
+      ["Threats vs vulnerabilities",["attack vectors","exposures"]],
+      ["Risk",["likelihood","impact"]],
+      ["Authentication",["passwords","MFA"]],
+      ["Authorization",["access control","RBAC"]],
+      ["Least privilege",["minimal permissions"]],
+      ["Defense in depth",["layered security"]],
+      ["Security policies",["acceptable use","standards"]],
+      ["Logging / monitoring",["SIEM inputs","alerting"]],
+      ["SIEM basics",["Splunk","log aggregation"]],
+      ["Antivirus / EDR basics",["detection","behavioral monitoring"]],
+      ["Security operations basics",["SOC workflows","incident response"]],
+    ]},
+   ]},
+
+  {id:"B", title:"Phase B — Reconnaissance & Scanning", short:"B", dur:"2–4 months",
+   cats:[
+    {name:"Passive Reconnaissance", topics:[
+      ["OSINT fundamentals",["public information gathering","attribution"]],
+      ["WHOIS",["registrant info","DNS ownership"]],
+      ["DNS enumeration",["records lookup","subdomains"]],
+      ["dig",["DNS querying"]],
+      ["nslookup",["name resolution"]],
+      ["host",["DNS lookup utility"]],
+      ["Google dorking",["advanced search operators","exposed files"]],
+      ["GitHub reconnaissance",["leaked credentials","exposed repositories"]],
+      ["Metadata extraction",["EXIF data","document metadata"]],
+      ["Social media reconnaissance",["employee info","company structure"]],
+      ["Breach data searching",["leaked credentials","breach databases"]],
+      ["Shodan",["internet-connected devices","banners"]],
+      ["Censys",["certificates","exposed infrastructure"]],
+      ["theHarvester",["emails","subdomains"]],
+      ["Maltego",["graphing relationships","OSINT mapping"]],
+      ["Recon-ng",["automated reconnaissance"]],
+      ["Amass",["asset discovery","DNS enumeration"]],
+      ["Certificate transparency logs",["SSL certificate enumeration"]],
+      ["Subdomain discovery",["passive enumeration","brute forcing"]],
+      ["ASN enumeration",["network ownership","IP ranges"]],
+    ]},
+    {name:"Active Reconnaissance", topics:[
+      ["Ping sweeps",["ICMP discovery","live host detection"]],
+      ["Port scanning",["open ports","filtered ports","closed ports"]],
+      ["Service detection",["banners","application identification"]],
+      ["Banner grabbing",["version information","service fingerprints"]],
+      ["Version detection",["software enumeration","known vulnerable versions"]],
+      ["OS fingerprinting",["TCP stack analysis","TTL analysis"]],
+      ["Network mapping",["topology discovery","live systems"]],
+      ["Host discovery",["ARP discovery","ICMP discovery","TCP discovery"]],
+      ["Service enumeration basics",["identifying attack surface","service interaction"]],
+    ]},
+    {name:"Nmap Mastery", topics:[
+      ["TCP scans",["connect scan","full handshake scanning"]],
+      ["SYN scans",["half-open scanning","stealth scanning"]],
+      ["UDP scans",["connectionless enumeration","timeout behavior"]],
+      ["Aggressive scans",["OS detection","script scanning","traceroute"]],
+      ["NSE scripts",["vuln scripts","brute scripts","discovery scripts"]],
+      ["Timing templates",["T0–T5","stealth vs speed"]],
+      ["Output formats",["grepable output","XML output","normal output"]],
+      ["Evasion techniques",["packet fragmentation","decoys","spoofing"]],
+      ["Firewall detection",["filtered ports","packet dropping"]],
+      ["Stealth scanning",["SYN stealth","idle scans"]],
+      ["Script scanning",["automation","service testing"]],
+      ["Vulnerability scanning with Nmap",["NSE vuln category","CVE discovery basics"]],
+    ]},
+    {name:"Advanced Scanning", topics:[
+      ["Masscan",["high-speed scanning","internet-scale recon"]],
+      ["Rustscan",["fast port scanning","Nmap integration"]],
+      ["Zmap",["large-scale enumeration","internet scanning"]],
+      ["Scan optimization",["threading","timing adjustments"]],
+      ["Large-scale recon",["automation","target management"]],
+      ["IDS/IPS evasion basics",["rate control","fragmentation","stealth timing"]],
+      ["Rate limiting awareness",["throttling","avoiding bans"]],
+    ]},
+    {name:"Traffic Analysis", topics:[
+      ["Packet capture",["sniffing","packet inspection"]],
+      ["Wireshark",["filters","packet streams","protocol analysis"]],
+      ["tcpdump",["CLI captures","packet filtering"]],
+      ["Protocol analysis",["TCP","HTTP","DNS","SMB"]],
+      ["HTTP analysis",["requests","responses","cookies","headers"]],
+      ["DNS analysis",["queries","responses","record types"]],
+      ["TLS inspection basics",["certificates","encrypted traffic behavior"]],
+    ]},
+   ]},
+
+  {id:"C", title:"Phase C — Enumeration", short:"C", dur:"3–5 months",
+   cats:[
+    {name:"Web Application Enumeration", topics:[
+      ["Directory brute-forcing",["hidden directories","hidden files"]],
+      ["Gobuster",["dir mode","dns mode","vhost mode"]],
+      ["ffuf",["fuzzing","parameter discovery"]],
+      ["dirsearch",["recursive scanning","extensions"]],
+      ["dirb",["wordlists","content discovery"]],
+      ["Robots.txt analysis",["hidden paths","disallowed routes"]],
+      ["Sitemap analysis",["endpoint discovery","crawl targets"]],
+      ["Parameter discovery",["GET parameters","POST parameters"]],
+      ["API endpoint discovery",["REST APIs","JSON endpoints"]],
+      ["Technology fingerprinting",["frameworks","libraries","servers"]],
+      ["CMS identification",["WordPress","Joomla","Drupal"]],
+      ["WAF detection",["Cloudflare","ModSecurity","fingerprints"]],
+      ["Subdomain enumeration",["brute forcing","passive discovery"]],
+      ["Web crawling / spidering",["recursive discovery","endpoint mapping"]],
+      ["JavaScript file analysis",["hidden endpoints","API keys","secrets"]],
+      ["Hidden endpoint discovery",["undocumented routes","debug endpoints"]],
+      ["Virtual host enumeration",["vhosts","host header discovery"]],
+    ]},
+    {name:"SMB Enumeration", topics:[
+      ["SMB protocol basics",["SMBv1/v2/v3","file sharing"]],
+      ["Null sessions",["anonymous access","enumeration without auth"]],
+      ["SMB shares",["shared folders","permissions"]],
+      ["SMB versioning",["deprecated versions","vulnerabilities"]],
+      ["smbclient",["share access","file browsing"]],
+      ["enum4linux",["users","groups","shares"]],
+      ["crackmapexec basics",["authentication testing","SMB enumeration"]],
+    ]},
+    {name:"FTP Enumeration", topics:[
+      ["Anonymous login",["guest access","default configs"]],
+      ["FTP banner analysis",["software versions","service identification"]],
+      ["Writable shares",["upload permissions","anonymous uploads"]],
+      ["FTP misconfigurations",["weak permissions","exposed backups"]],
+    ]},
+    {name:"SSH Enumeration", topics:[
+      ["SSH versions",["OpenSSH enumeration","vulnerable versions"]],
+      ["Weak configurations",["password auth","weak ciphers"]],
+      ["SSH algorithms",["key exchange","host keys"]],
+      ["Key-based authentication basics",["public/private keys","authorized_keys"]],
+    ]},
+    {name:"SMTP Enumeration", topics:[
+      ["VRFY / EXPN",["user verification","mailbox discovery"]],
+      ["User enumeration",["valid usernames","mailboxes"]],
+      ["Open relay testing",["unauthorized relays","spam abuse"]],
+      ["Mail server analysis",["SMTP banners","configurations"]],
+    ]},
+    {name:"SNMP Enumeration", topics:[
+      ["Community strings",["public/private defaults","access levels"]],
+      ["SNMPwalk",["OID enumeration","device information"]],
+      ["Information disclosure",["system names","processes","interfaces"]],
+    ]},
+    {name:"Database Enumeration", topics:[
+      ["MySQL",["default creds","schema enumeration"]],
+      ["PostgreSQL",["users","databases"]],
+      ["MSSQL",["xp_cmdshell","SQL Server configs"]],
+      ["MongoDB",["unauthenticated access","collections"]],
+      ["Redis",["exposed instances","configuration abuse"]],
+      ["Default credentials",["vendor defaults","weak passwords"]],
+      ["Database fingerprinting",["version detection","DBMS identification"]],
+    ]},
+    {name:"LDAP & Active Directory Enumeration", topics:[
+      ["LDAP basics",["directory services","LDAP structure","distinguished names (DNs)"]],
+      ["Kerberos basics",["ticket authentication","TGT/TGS"]],
+      ["Domains / forests",["trust relationships","AD hierarchy"]],
+      ["BloodHound",["attack path mapping","graph analysis"]],
+      ["PowerView",["PowerShell AD enumeration","domain querying"]],
+      ["SharpHound",["data collection","BloodHound ingestion"]],
+      ["Kerberoasting",["SPN ticket extraction","offline cracking"]],
+      ["AS-REP roasting",["pre-auth disabled accounts","hash extraction"]],
+      ["SPNs",["service principal names","Kerberos services"]],
+      ["Group policy enumeration",["GPO discovery","policy abuse"]],
+      ["User / computer enumeration",["domain users","domain computers","group memberships"]],
+      ["Shares enumeration",["SYSVOL","NETLOGON","SMB shares"]],
+    ]},
+    {name:"RPC / NFS Enumeration", topics:[
+      ["RPC services",["rpcinfo","exposed procedures"]],
+      ["NFS shares",["exported directories","permissions"]],
+      ["Mounting remote shares",["mount command","remote file access"]],
+    ]},
+   ]},
+
+  {id:"D", title:"Phase D — Exploitation", short:"D", dur:"6–12+ months",
+   cats:[
+    {name:"Vulnerability Research", topics:[
+      ["CVEs",["vulnerability identifiers","CVE databases"]],
+      ["NVD",["vulnerability scoring","exploit references"]],
+      ["MITRE ATT&CK",["attack techniques","adversary tactics"]],
+      ["Exploit-DB",["exploit searching","PoCs"]],
+      ["searchsploit",["local exploit database","exploit filtering"]],
+      ["GitHub exploit research",["public PoCs","exploit repositories"]],
+      ["Vulnerability validation",["confirming exploits","false positive reduction"]],
+      ["False positives",["scanner inaccuracies","validation methods"]],
+      ["CVSS scoring",["severity ratings","impact metrics"]],
+    ]},
+    {name:"Vulnerability Scanners", topics:[
+      ["Nessus",["authenticated scans","vulnerability reports"]],
+      ["OpenVAS",["open-source scanning","configuration"]],
+      ["Nikto",["web server scanning","dangerous files"]],
+      ["Nuclei",["template-based scanning","CVE templates"]],
+      ["Burp Scanner",["automated web scanning","issue discovery"]],
+      ["Scanner tuning",["scope control","false positive reduction"]],
+      ["Report interpretation",["remediation","prioritization"]],
+    ]},
+    {name:"Web Application Attacks — OWASP Top 10", topics:[
+      ["Broken access control",["privilege escalation","authorization flaws"]],
+      ["Cryptographic failures",["weak encryption","exposed secrets"]],
+      ["Injection",["SQLi","command injection"]],
+      ["Insecure design",["logic flaws","insecure workflows"]],
+      ["Security misconfiguration",["default credentials","debug modes"]],
+      ["Vulnerable components",["outdated libraries","known CVEs"]],
+      ["Authentication failures",["weak passwords","MFA bypass"]],
+      ["Software / data integrity failures",["insecure updates","CI/CD abuse"]],
+      ["Logging / monitoring failures",["missing alerts","weak auditing"]],
+      ["SSRF",["internal requests","cloud metadata access"]],
+    ]},
+    {name:"Injection Attacks", topics:[
+      ["SQL injection",["UNION injection","error-based injection"]],
+      ["Blind SQLi",["boolean-based","time-based"]],
+      ["NoSQL injection",["MongoDB operators","authentication bypass"]],
+      ["LDAP injection",["LDAP filters","directory bypass"]],
+      ["Command injection",["shell execution","OS commands"]],
+      ["SSTI",["template engines","server-side execution"]],
+    ]},
+    {name:"XSS", topics:[
+      ["Stored XSS",["persistent payloads","database storage"]],
+      ["Reflected XSS",["reflected input","URL payloads"]],
+      ["DOM XSS",["client-side manipulation","unsafe JS"]],
+    ]},
+    {name:"Authentication Attacks", topics:[
+      ["Session hijacking",["stolen cookies","session replay"]],
+      ["Session fixation",["forced session IDs"]],
+      ["JWT attacks",["weak secrets","alg:none abuse"]],
+      ["MFA bypass",["logic flaws","token abuse"]],
+      ["Credential attacks",["stuffing","spraying"]],
+    ]},
+    {name:"Access Control Attacks", topics:[
+      ["IDOR",["object reference abuse","unauthorized access"]],
+      ["Privilege escalation",["horizontal escalation","vertical escalation"]],
+      ["Forced browsing",["hidden endpoints","direct resource access"]],
+    ]},
+    {name:"File Vulnerabilities", topics:[
+      ["File upload attacks",["malicious uploads","extension bypasses"]],
+      ["Path traversal",["directory escape","file disclosure"]],
+      ["LFI / RFI",["local inclusion","remote inclusion"]],
+    ]},
+    {name:"Other Web Vulnerabilities", topics:[
+      ["XXE",["XML parsing abuse","file disclosure"]],
+      ["SSRF",["internal resource access","cloud attacks"]],
+      ["CSRF",["forged requests","session abuse"]],
+      ["Deserialization",["object injection","RCE potential"]],
+      ["Race conditions",["timing attacks","concurrent requests"]],
+      ["Open redirects",["phishing abuse","redirect manipulation"]],
+      ["Cache poisoning",["malicious cache entries","response manipulation"]],
+      ["Prototype pollution",["JavaScript object abuse","property injection"]],
+    ]},
+    {name:"Web Pentesting Tools", topics:[
+      ["Burp Suite",["proxying","interception","testing workflows"]],
+      ["Repeater",["manual request replay","payload testing"]],
+      ["Intruder",["fuzzing","brute forcing"]],
+      ["Decoder",["encoding/decoding","transformations"]],
+      ["Comparer",["response comparison","diff analysis"]],
+      ["Extensions",["BApps","automation plugins"]],
+      ["OWASP ZAP",["passive scanning","active scanning"]],
+      ["SQLmap",["automated SQLi","database dumping"]],
+      ["wfuzz",["fuzzing","endpoint discovery"]],
+    ]},
+    {name:"Password Attacks", topics:[
+      ["Brute force",["exhaustive guessing","online attacks"]],
+      ["Dictionary attacks",["wordlists","common passwords"]],
+      ["Password spraying",["one password / many users","account lockout avoidance"]],
+      ["Credential stuffing",["reused credentials","breach data"]],
+      ["Offline cracking",["hash cracking","local attacks"]],
+      ["Hashcat",["GPU cracking","rules/masks"]],
+      ["John the Ripper",["CPU cracking","hash formats"]],
+      ["Hydra",["network brute forcing","login attacks"]],
+      ["Medusa",["parallel brute forcing","authentication services"]],
+      ["Patator",["modular brute force","protocol attacks"]],
+      ["Ncrack",["network authentication cracking"]],
+      ["SecLists",["payload lists","usernames/passwords"]],
+      ["rockyou",["leaked password list"]],
+      ["crunch",["custom wordlists","pattern generation"]],
+      ["cewl",["website scraping","custom dictionaries"]],
+      ["Rulesets / masks",["mutation rules","mask attacks"]],
+      ["Hash formats",["NTLM","bcrypt","SHA hashes"]],
+    ]},
+    {name:"Network Attacks", topics:[
+      ["ARP spoofing",["ARP poisoning","MITM positioning"]],
+      ["DNS poisoning",["fake DNS responses","redirect attacks"]],
+      ["MITM attacks",["interception","traffic manipulation"]],
+      ["SMB relay",["NTLM relay","authentication forwarding"]],
+      ["LLMNR poisoning",["multicast name resolution abuse","credential capture"]],
+      ["NBT-NS poisoning",["NetBIOS spoofing","hash interception"]],
+      ["Responder",["rogue responses","NTLM hash capture"]],
+      ["Bettercap",["sniffing","MITM framework"]],
+      ["Ettercap",["packet interception","network poisoning"]],
+      ["Pass-the-Hash",["NTLM authentication reuse","lateral movement"]],
+      ["Pass-the-Ticket",["Kerberos ticket reuse","domain movement"]],
+      ["NTLM attacks",["relay attacks","hash theft"]],
+    ]},
+    {name:"Exploitation Frameworks", topics:[
+      ["Metasploit",["exploit framework","modules"]],
+      ["msfconsole",["framework interface","module interaction"]],
+      ["Payloads",["staged payloads","stageless payloads"]],
+      ["Encoders",["payload obfuscation","AV evasion basics"]],
+      ["Auxiliary modules",["scanners","brute force modules"]],
+      ["Post modules",["post-exploitation automation","credential gathering"]],
+      ["Meterpreter",["shells","pivoting","persistence"]],
+      ["Empire",["PowerShell C2","agents"]],
+      ["Starkiller",["Empire GUI","listener management"]],
+      ["Covenant",[".NET C2","tasking"]],
+      ["Cobalt Strike concepts",["beacons","team servers","OPSEC basics"]],
+    ]},
+    {name:"Wireless Attacks", topics:[
+      ["WPA / WPA2 cracking",["handshake capture","offline cracking"]],
+      ["WPA3 basics",["SAE authentication","newer protections"]],
+      ["Evil twin attacks",["rogue APs","captive portals"]],
+      ["Rogue access points",["fake Wi-Fi networks","traffic interception"]],
+      ["Deauthentication attacks",["forcing reconnects","handshake harvesting"]],
+      ["Captive portals",["login interception","phishing pages"]],
+      ["Aircrack-ng suite",["airodump-ng","aireplay-ng","aircrack-ng"]],
+    ]},
+    {name:"Binary Exploitation & Reverse Engineering", topics:[
+      ["CPU registers",["EAX/RAX","instruction pointers"]],
+      ["Stack / heap",["memory layout","allocations"]],
+      ["x86 assembly",["instructions","registers"]],
+      ["x64 assembly",["calling conventions","64-bit registers"]],
+      ["Calling conventions",["function arguments","stack usage"]],
+      ["GDB basics",["breakpoints","debugging"]],
+      ["Buffer overflows",["stack smashing","instruction pointer control"]],
+      ["Shellcode",["payload execution","assembly payloads"]],
+      ["ROP",["gadgets","chained execution"]],
+      ["Format strings",["memory reading","arbitrary writes"]],
+      ["Heap exploitation",["heap corruption","allocator abuse"]],
+      ["Ghidra basics",["decompilation","binary analysis"]],
+      ["IDA basics",["disassembly","reverse engineering workflows"]],
+      ["Reverse engineering basics",["static analysis","dynamic analysis"]],
+    ]},
+   ]},
+
+  {id:"E", title:"Phase E — Post-Exploitation", short:"E", dur:"3–6 months",
+   cats:[
+    {name:"Linux Privilege Escalation", topics:[
+      ["SUID / SGID",["privileged binaries","GTFOBins"]],
+      ["PATH hijacking",["executable precedence","environment manipulation"]],
+      ["Cron job abuse",["writable scripts","scheduled execution"]],
+      ["Weak sudo configs",["NOPASSWD","sudo misconfigurations"]],
+      ["Writable services / scripts",["service abuse","script injection"]],
+      ["Kernel exploits",["privilege escalation CVEs","vulnerable kernels"]],
+      ["Capabilities",["Linux capabilities","capability abuse"]],
+      ["Environment variable abuse",["LD_PRELOAD","PATH manipulation"]],
+      ["LinPEAS",["automated enumeration","misconfiguration discovery"]],
+      ["LinEnum",["Linux enumeration","privilege escalation checks"]],
+    ]},
+    {name:"Windows Privilege Escalation", topics:[
+      ["Service misconfigurations",["insecure services","writable binaries"]],
+      ["Unquoted service paths",["path injection","executable hijacking"]],
+      ["DLL hijacking",["DLL search order abuse","malicious DLLs"]],
+      ["Weak permissions",["writable directories","insecure ACLs"]],
+      ["Token impersonation",["SeImpersonatePrivilege","potato attacks"]],
+      ["UAC bypass",["elevation bypasses","auto-elevated binaries"]],
+      ["Scheduled task abuse",["writable tasks","task hijacking"]],
+      ["Registry abuse",["autoruns","registry persistence"]],
+      ["WinPEAS",["Windows enumeration","privilege escalation checks"]],
+      ["Seatbelt",["security auditing","host enumeration"]],
+    ]},
+    {name:"Persistence", topics:[
+      ["Scheduled tasks",["Windows task persistence","automation abuse"]],
+      ["Cron persistence",["recurring execution","hidden cron jobs"]],
+      ["Registry persistence",["Run keys","startup entries"]],
+      ["SSH key planting",["authorized_keys abuse","remote persistence"]],
+      ["Web shells",["PHP shells","command execution"]],
+      ["Startup folder abuse",["autorun persistence","shortcut abuse"]],
+      ["Service persistence",["malicious services","auto-start services"]],
+      ["Backdoors",["hidden access","persistent implants"]],
+    ]},
+    {name:"Lateral Movement", topics:[
+      ["Pivoting",["internal routing","compromised host relays"]],
+      ["SOCKS proxies",["proxy tunnels","internal access"]],
+      ["SSH tunneling",["local forwarding","remote forwarding"]],
+      ["Chisel",["TCP tunneling","reverse tunnels"]],
+      ["Ligolo",["agent tunneling","network pivoting"]],
+      ["Proxychains",["proxy routing","chained connections"]],
+      ["RDP movement",["remote desktop access","internal navigation"]],
+      ["PsExec",["remote execution","SMB-based access"]],
+      ["WinRM",["PowerShell remoting","remote administration"]],
+      ["AD lateral movement",["credential reuse","domain pivoting"]],
+    ]},
+    {name:"Active Directory Attacks", topics:[
+      ["Kerberos attacks",["ticket abuse","forged tickets"]],
+      ["Golden tickets",["forged TGTs","KRBTGT abuse"]],
+      ["Silver tickets",["forged service tickets","SPN abuse"]],
+      ["ACL abuse",["delegated permissions","object control"]],
+      ["DCSync",["domain replication abuse","hash extraction"]],
+      ["DCShadow",["rogue domain controller behavior","stealth modifications"]],
+      ["Delegation abuse",["unconstrained delegation","constrained delegation"]],
+      ["Domain trusts",["cross-domain movement","trust abuse"]],
+      ["ADCS attacks",["certificate abuse","ESC vulnerabilities"]],
+    ]},
+    {name:"Data Exfiltration", topics:[
+      ["Identifying sensitive files",["credentials","databases","documents"]],
+      ["Compression",["zip","tar.gz","archive splitting"]],
+      ["Encryption",["encrypted archives","secure transfers"]],
+      ["Stealth transfers",["low-and-slow exfiltration","covert channels"]],
+      ["Exfiltration channels",["HTTP/HTTPS","DNS tunneling","cloud uploads"]],
+    ]},
+    {name:"OPSEC & Evasion", topics:[
+      ["Covering tracks",["timestamp modification","artifact cleanup"]],
+      ["Clearing logs",["Windows Event Logs","Linux logs"]],
+      ["Antivirus evasion basics",["obfuscation","signature evasion"]],
+      ["Defender bypass concepts",["AMSI bypass concepts","PowerShell evasion basics"]],
+      ["Living-off-the-land binaries",["LOLBins","native Windows tools"]],
+    ]},
+    {name:"Reporting & Professional Skills", topics:[
+      ["Note-taking",["structured documentation","evidence tracking"]],
+      ["Obsidian",["markdown notes","knowledge management"]],
+      ["CherryTree",["hierarchical notes","pentest organization"]],
+      ["Screenshots",["proof collection","annotation basics"]],
+      ["Evidence collection",["logs","artifacts","reproducibility"]],
+      ["Executive summaries",["business impact","non-technical communication"]],
+      ["Technical documentation",["attack steps","findings","PoCs"]],
+      ["Remediation writing",["mitigation steps","security recommendations"]],
+      ["Risk ratings",["severity scoring","likelihood vs impact"]],
+      ["Client communication",["professionalism","stakeholder interaction"]],
+      ["Presentation skills",["reporting walkthroughs","explaining technical findings"]],
+    ]},
+   ]},
+
+  {id:"F", title:"Phase F — Specialized Areas", short:"F", dur:"Ongoing",
+   cats:[
+    {name:"Advanced Active Directory", topics:[
+      ["Advanced Kerberos abuse",["advanced ticket attacks","delegation abuse"]],
+      ["ADCS",["certificate templates","ESC attack paths"]],
+      ["Forest / domain trust attacks",["cross-forest movement","trust exploitation"]],
+      ["Exchange attacks",["Exchange enumeration","privilege escalation paths"]],
+      ["Hybrid AD environments",["on-prem + cloud identity","Azure AD sync"]],
+    ]},
+    {name:"Cloud Pentesting — AWS", topics:[
+      ["IAM abuse",["privilege escalation","policy misconfigurations"]],
+      ["S3 attacks",["exposed buckets","bucket policies"]],
+      ["Lambda security",["serverless abuse","insecure functions"]],
+      ["EC2 enumeration",["metadata service","instance roles"]],
+    ]},
+    {name:"Cloud Pentesting — Azure", topics:[
+      ["Azure AD attacks",["tenant enumeration","identity abuse"]],
+      ["Managed identities",["token abuse","cloud privilege escalation"]],
+      ["RBAC abuse",["role assignments","excessive permissions"]],
+    ]},
+    {name:"Cloud Pentesting — GCP", topics:[
+      ["Service accounts",["key abuse","IAM roles"]],
+      ["Cloud storage abuse",["bucket exposure","public access"]],
+    ]},
+    {name:"Containers & Orchestration", topics:[
+      ["Docker security",["container misconfigurations","Docker socket abuse"]],
+      ["Kubernetes attacks",["kubeconfig abuse","pod escapes"]],
+      ["Container escapes",["host breakout","privileged containers"]],
+    ]},
+    {name:"Mobile Pentesting — Android", topics:[
+      ["APK analysis",["decompilation","manifest analysis"]],
+      ["Frida",["runtime instrumentation","hook functions"]],
+      ["Objection",["mobile runtime testing","bypass automation"]],
+      ["Smali basics",["Android bytecode","app modification"]],
+    ]},
+    {name:"Mobile Pentesting — iOS", topics:[
+      ["Jailbreaking concepts",["sandbox escape concepts","root access"]],
+      ["IPA analysis",["app unpacking","binary analysis"]],
+      ["Runtime manipulation",["dynamic hooks","bypass techniques"]],
+    ]},
+    {name:"Malware Analysis & Reverse Engineering", topics:[
+      ["Static analysis",["strings","imports","binary inspection"]],
+      ["Dynamic analysis",["sandbox execution","runtime monitoring"]],
+      ["Sandboxing",["isolated environments","malware detonation"]],
+      ["Packers / obfuscation",["packed binaries","anti-analysis techniques"]],
+      ["Malware behavior analysis",["persistence","beaconing","process injection"]],
+    ]},
+    {name:"Red Teaming", topics:[
+      ["Adversary emulation",["ATT&CK mapping","realistic attack chains"]],
+      ["OPSEC",["stealth operations","detection avoidance"]],
+      ["C2 infrastructure",["command-and-control servers","redirectors"]],
+      ["Evasion strategies",["AV evasion","EDR evasion concepts"]],
+      ["Phishing operations",["payload delivery","credential harvesting"]],
+    ]},
+    {name:"Wireless & RF Security", topics:[
+      ["SDR basics",["software-defined radio","signal analysis"]],
+      ["RFID attacks",["badge cloning","proximity cards"]],
+      ["Bluetooth attacks",["pairing abuse","BLE vulnerabilities"]],
+      ["Zigbee attacks",["IoT protocols","smart device attacks"]],
+    ]},
+    {name:"IoT & Hardware Hacking", topics:[
+      ["UART",["serial communication","console access"]],
+      ["JTAG",["debugging interfaces","hardware access"]],
+      ["Firmware extraction",["dumping firmware","filesystem analysis"]],
+      ["Embedded Linux",["BusyBox","lightweight systems"]],
+      ["Hardware debugging",["logic analyzers","hardware tools"]],
+    ]},
+    {name:"Social Engineering", topics:[
+      ["Phishing",["email attacks","credential harvesting"]],
+      ["Vishing",["voice phishing","impersonation"]],
+      ["Smishing",["SMS phishing","malicious links"]],
+      ["Pretexting",["fake identities","trust manipulation"]],
+      ["Physical security testing",["badge bypasses","tailgating"]],
+      ["Human psychology basics",["persuasion","social manipulation"]],
+    ]},
+   ]},
+
+  {id:"★", title:"Certification Path (Optional)", short:"★", dur:"Self-paced",
+   cats:[
+    {name:"Beginner", topics:[
+      ["CompTIA A+",["hardware basics","operating systems","troubleshooting"]],
+      ["CompTIA Network+",["networking fundamentals","protocols","routing/switching"]],
+      ["CompTIA Security+",["security fundamentals","risk management","defensive concepts"]],
+    ]},
+    {name:"Entry Pentesting", topics:[
+      ["eJPT",["practical pentesting","enumeration","exploitation basics"]],
+      ["PNPT",["AD attacks","reporting","practical assessments"]],
+    ]},
+    {name:"Intermediate", topics:[
+      ["PenTest+",["pentesting workflows","vulnerability management"]],
+      ["OSCP",["lab exploitation","privilege escalation","AD basics"]],
+    ]},
+    {name:"Advanced", topics:[
+      ["OSEP",["advanced exploitation","evasion techniques"]],
+      ["OSWE",["web app exploitation","source code review"]],
+      ["CRTO",["red teaming","Cobalt Strike"]],
+      ["GXPN",["exploit development","advanced attacks"]],
+    ]},
+   ]},
+
+  {id:"✦", title:"Learning Resources", short:"✦", dur:"Reference",
+   resources:true,
+   groups:[
+    {name:"Beginner Platforms", topics:[
+      ["TryHackMe",["guided learning","beginner paths"]],
+      ["OverTheWire",["Linux basics","command-line practice"]],
+      ["PicoCTF",["beginner CTFs","foundational security skills"]],
+    ]},
+    {name:"Intermediate Platforms", topics:[
+      ["Hack The Box",["realistic labs","active machines"]],
+      ["PortSwigger Web Security Academy",["web exploitation","OWASP Top 10"]],
+    ]},
+    {name:"YouTube", topics:[
+      ["IppSec",["Hack The Box walkthroughs","enumeration methodology"]],
+      ["John Hammond",["CTFs","malware analysis","tooling"]],
+      ["TCM Security",["pentesting tutorials","career guidance"]],
+    ]},
+    {name:"Books", topics:[
+      ["The Web Application Hacker’s Handbook",["web exploitation","Burp Suite workflows"]],
+      ["The Hacker Playbook",["attack methodologies","practical labs"]],
+      ["Penetration Testing: A Hands-On Introduction to Hacking",["beginner pentesting","practical exercises"]],
+      ["RTFM: Red Team Field Manual",["commands","quick references"]],
+    ]},
+   ]},
+];
+
+/* ---------- STATE ---------- */
+const STORAGE_KEY = "ouroboros_hermit_done_v1";
+const done = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+function saveDone(){ localStorage.setItem(STORAGE_KEY, JSON.stringify([...done])); }
+
+/* ---------- BUILD OUROBOROS ---------- */
+const svg = document.getElementById("svgRoot");
+const NS = "http://www.w3.org/2000/svg";
+const R = 300; // ring radius for snake body
+
+// Defs: gradient + filters
+svg.innerHTML = `
+<defs>
+  <linearGradient id="snakeGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#7a4f24"/>
+    <stop offset="50%" stop-color="#c8924a"/>
+    <stop offset="100%" stop-color="#5a3618"/>
+  </linearGradient>
+  <radialGradient id="scaleGrad" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#e3a55a" stop-opacity=".55"/>
+    <stop offset="100%" stop-color="#c8924a" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="6" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+
+<!-- outer faint ring -->
+<circle cx="0" cy="0" r="${R+34}" fill="none" stroke="#5a4226" stroke-width="1" stroke-dasharray="2 6" opacity=".5"/>
+<circle cx="0" cy="0" r="${R-34}" fill="none" stroke="#5a4226" stroke-width="1" stroke-dasharray="2 6" opacity=".5"/>
+
+<!-- snake body: thick gold ring -->
+<circle cx="0" cy="0" r="${R}" fill="none" stroke="url(#snakeGrad)" stroke-width="48" stroke-linecap="round" filter="url(#glow)"/>
+<!-- inner shadow line -->
+<circle cx="0" cy="0" r="${R}" fill="none" stroke="#1a1108" stroke-width="2" opacity=".5"/>
+<!-- scales -->
+<g id="scales"></g>
+
+<!-- snake head & tail meet at the top (12 o'clock = -90deg) -->
+<g id="headTail"></g>
+
+<!-- nodes group -->
+<g id="nodes"></g>
+`;
+
+// Generate scale tick marks along the ring
+const scales = svg.querySelector("#scales");
+const N_SCALES = 72;
+for(let i=0;i<N_SCALES;i++){
+  const ang = (i/N_SCALES)*Math.PI*2 - Math.PI/2;
+  const x1 = Math.cos(ang)*(R-22), y1 = Math.sin(ang)*(R-22);
+  const x2 = Math.cos(ang)*(R+22), y2 = Math.sin(ang)*(R+22);
+  const ln = document.createElementNS(NS,"line");
+  ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
+  ln.setAttribute("x2",x2); ln.setAttribute("y2",y2);
+  ln.setAttribute("stroke","#3a2616");
+  ln.setAttribute("stroke-width","1");
+  ln.setAttribute("opacity",".55");
+  scales.appendChild(ln);
+}
+
+// Snake head & tail meeting point (top, near the HERMIT label)
+// Place head slightly to the left of top, tail slightly to the right, head biting tail
+const ht = svg.querySelector("#headTail");
+ht.innerHTML = `
+  <!-- tail tapers (right of top) -->
+  <path d="M 28,-${R} q 30,-2 50,8" fill="none" stroke="url(#snakeGrad)" stroke-width="22" stroke-linecap="round" opacity=".95"/>
+  <!-- head shape (left of top) biting -->
+  <g transform="translate(-30,-${R}) rotate(-15)">
+    <path d="M 0,0 q 30,-22 60,-6 q 12,8 8,18 q -10,12 -34,8 q -22,-2 -34,-12 z"
+          fill="url(#snakeGrad)" stroke="#1a1108" stroke-width="1.5"/>
+    <!-- eye -->
+    <circle cx="34" cy="-4" r="3.2" fill="#1a1108"/>
+    <circle cx="34.8" cy="-5" r="1" fill="#f4c97a"/>
+    <!-- fang -->
+    <path d="M 28,12 l 2,8 l 2,-8 z" fill="#f4ead0"/>
+  </g>
+`;
+
+/* ---------- NODES AROUND CIRCLE ---------- */
+const nodesG = svg.querySelector("#nodes");
+const PHASE_COUNT = PHASES.length;
+// Distribute nodes around the circle, leaving the top (HERMIT/head-tail) area clearer.
+// Use angles from -65deg sweeping clockwise back to -115deg (skipping the top wedge).
+const startDeg = -65; // just right of top
+const endDeg = 295;   // 295 = -65 + 360, full sweep but starting after top
+// We'll skip a 50deg gap at top (from -115 to -65)
+const usable = 360 - 50; // 310 degrees usable
+PHASES.forEach((p,i)=>{
+  const t = i/(PHASE_COUNT-1);
+  const deg = startDeg + t*usable;
+  const rad = deg * Math.PI/180;
+  const x = Math.cos(rad)*R, y = Math.sin(rad)*R;
+  const g = document.createElementNS(NS,"g");
+  g.setAttribute("class","node"+(done.has(p.id)?" done":""));
+  g.setAttribute("data-id", p.id);
+  g.setAttribute("transform",`translate(${x},${y})`);
+  g.innerHTML = `
+    <circle class="ring" r="36"/>
+    <circle class="bg" r="28"/>
+    <text>${p.short}</text>
+  `;
+  // Label outside the ring
+  const lx = Math.cos(rad)*(R+62), ly = Math.sin(rad)*(R+62);
+  const lbl = document.createElementNS(NS,"text");
+  lbl.setAttribute("class","label");
+  lbl.setAttribute("x",lx); lbl.setAttribute("y",ly);
+  // small wrap: split title into 2 lines if long
+  const titleParts = p.title.replace(/^Phase [0A-F✦★]+\s*[—-]\s*/,"").split(/\s+/);
+  let line1 = titleParts.slice(0,2).join(" ");
+  let line2 = titleParts.slice(2).join(" ");
+  if(!line2){ lbl.textContent = line1; }
+  else {
+    const t1 = document.createElementNS(NS,"tspan"); t1.setAttribute("x",lx); t1.setAttribute("dy","-0.2em"); t1.textContent = line1;
+    const t2 = document.createElementNS(NS,"tspan"); t2.setAttribute("x",lx); t2.setAttribute("dy","1.1em"); t2.textContent = line2;
+    lbl.append(t1,t2);
+  }
+  // Duration label
+  const dx = Math.cos(rad)*(R+92), dy = Math.sin(rad)*(R+92);
+  const dlbl = document.createElementNS(NS,"text");
+  dlbl.setAttribute("class","label dur");
+  dlbl.setAttribute("x",dx); dlbl.setAttribute("y",dy);
+  dlbl.textContent = p.dur;
+
+  g.addEventListener("click",()=>openPanel(p.id));
+  nodesG.append(g, lbl, dlbl);
+});
+
+/* ---------- PANEL ---------- */
+const panel = document.getElementById("panel");
+function openPanel(id){
+  const p = PHASES.find(x=>x.id===id); if(!p) return;
+  const isDone = done.has(id);
+  let html = `
+    <header>
+      <div>
+        <h2>${p.title}</h2>
+        <div class="dur">Duration: ${p.dur}</div>
+      </div>
+      ${p.resources? "" : `<button class="toggle ${isDone?"done":""}" id="btnToggle">${isDone?"✓ Completed":"Mark complete"}</button>`}
+    </header>
+  `;
+
+  const groups = p.resources ? p.groups : p.cats;
+  groups.forEach((c,ci)=>{
+    html += `<div class="cat"><h3>${c.name}</h3><ul class="tree">`;
+    c.topics.forEach((t,ti)=>{
+      const [name, subs] = t;
+      const tid = `t-${id}-${ci}-${ti}`;
+      html += `<li>
+        <div class="topic" data-target="${tid}">
+          <span class="arrow">▶</span><span>${name}</span>
+        </div>
+        <ul id="${tid}" class="hidden">
+          ${subs.map(s=>`<li class="sub">${s}</li>`).join("")}
+        </ul>
+      </li>`;
+    });
+    html += `</ul></div>`;
+  });
+
+  panel.innerHTML = html;
+  panel.classList.add("open");
+  panel.scrollIntoView({behavior:"smooth", block:"start"});
+
+  panel.querySelectorAll(".topic").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const t = document.getElementById(el.dataset.target);
+      t.classList.toggle("hidden");
+      el.classList.toggle("open");
+    });
+  });
+
+  const btn = document.getElementById("btnToggle");
+  if(btn){
+    btn.addEventListener("click",()=>{
+      if(done.has(id)){ done.delete(id); } else { done.add(id); }
+      saveDone();
+      // update node visual
+      const node = nodesG.querySelector(`.node[data-id="${CSS.escape(id)}"]`);
+      if(node) node.classList.toggle("done", done.has(id));
+      // update button
+      const nowDone = done.has(id);
+      btn.textContent = nowDone ? "✓ Completed" : "Mark complete";
+      btn.classList.toggle("done", nowDone);
+    });
+  }
+}
+</script>
+</body>
+</html>
